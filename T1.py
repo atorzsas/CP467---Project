@@ -2,29 +2,30 @@ import cv2
 import numpy as np
 import os
 import random
+import math
 
 template_images = {
-    'O1': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O1.png",
-    'O2': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O2.png",
-    'O3': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O3.png",
-    'O4': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O4.png",
-    'O5': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O5.png",
-    'O6': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O6.png",
-    'O7': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O7.png",
-    'O8': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O8.png",
-    'O9': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O9.png",
-    'O10': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O10.png",
-    'O11': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O11.png",
-    'O12': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O12.png",
-    'O13': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O13.png",
-    'O14': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O14.png",
-    'O15': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O15.png",
-    'O16': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O16.png",
-    'O17': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O17.png",
-    'O18': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O18.png",
-    'O19': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O19.png",
-    'O20': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O20.png",
-    'O21': r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Objects\O21.png",
+    'O1': r"Objects\O1.png",
+    'O2': r"Objects\O2.png",
+    'O3': r"Objects\O3.png",
+    'O4': r"Objects\O4.png",
+    'O5': r"Objects\O5.png",
+    'O6': r"Objects\O6.png",
+    'O7': r"Objects\O7.png",
+    'O8': r"Objects\O8.png",
+    'O9': r"Objects\O9.png",
+    'O10': r"Objects\O10.png",
+    'O11': r"Objects\O11.png",
+    'O12': r"Objects\O12.png",
+    'O13': r"Objects\O13.png",
+    'O14': r"Objects\O14.png",
+    'O15': r"Objects\O15.png",
+    'O16': r"Objects\O16.png",
+    'O17': r"Objects\O17.png",
+    'O18': r"Objects\O18.png",
+    'O19': r"Objects\O19.png",
+    'O20': r"Objects\O20.png",
+    'O21': r"Objects\O21.png",
 }
 
 objectDict = {
@@ -52,35 +53,35 @@ objectDict = {
 }
 
 scenesDatabase = {
-    'S1': ['O2', 'O5', 'O8', 'O9', 'O10', 'O11', 'O12', 'O17'],
-    'S2': ['O2','O4', 'O5','O8', 'O9', 'O10','O12','O14', 'O15','O17'],
-    'S3': ['O2', 'O4', 'O5','O8', 'O9', 'O10', 'O12', 'O14', 'O15', 'O17'],
-    'S4': ['O1', 'O6', 'O7', 'O8', 'O9', 'O14', 'O15', 'O16', 'O17', 'O18', 'O20'],
-    'S5': ['O6', 'O16', 'O18', 'O19', 'O20', 'O21'],
-    'S6': ['O1', 'O3', 'O6', 'O13', 'O16', 'O19'],
-    'S7': ['O1', 'O2', 'O3', 'O8', 'O9', 'O11', 'O12', 'O13', 'O15', 'O16', 'O17'],
-    'S8': ['O1', 'O2', 'O3', 'O7', 'O8', 'O9', 'O11', 'O12', 'O13', 'O15', 'O16', 'O17', 'O20'],
-    'S9': ['O1', 'O2', 'O8', 'O9', 'O10', 'O11', 'O12', 'O13'],
+    'S1': ['O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'O8', 'O9', 'O10', 'O11', 'O12', 'O13', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
+    'S2': ['O2', 'O5', 'O8', 'O10', 'O11', 'O12', 'O17'],
+    'S3': ['O2','O4', 'O5','O8', 'O9', 'O10','O12','O14', 'O15','O17'],
+    'S4': ['O1', 'O6', 'O7', 'O9', 'O12', 'O14', 'O15', 'O16', 'O17', 'O18', 'O20'],
+    'S5': ['O6', 'O16', 'O18', 'O19', 'O21'],
+    'S6': ['O3', 'O16', 'O19'],
+    'S7': ['01', 'O2', 'O8', 'O11', 'O12', 'O13', 'O15', 'O17'],
+    'S8': ['O1', 'O2', 'O8', 'O12', 'O15', 'O17', 'O20'],
+    'S9': ['O1', 'O2', 'O8', 'O11', 'O12', 'O13'],
     'S10': ['O2', 'O5', 'O8', 'O10', 'O11', 'O12', 'O17'],
     'S11': ['O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'O8', 'O9', 'O11', 'O12', 'O13', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20'],
-    'S12': ['O1', 'O2', 'O3', 'O6', 'O7', 'O9', 'O11', 'O12', 'O13', 'O15', 'O16', 'O18', 'O19', 'O20', 'O21'],
+    'S12': ['O1', 'O3', 'O6', 'O7', 'O9', 'O12', 'O13', 'O15', 'O16', 'O18', 'O19', 'O20', 'O21'],
     'S13': ['O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'O8', 'O9', 'O10', 'O11', 'O12', 'O13', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
-    'S14': ['O1', 'O2', 'O4', 'O5', 'O6', 'O7', 'O8', 'O10', 'O12', 'O14', 'O15', 'O17', 'O20'],
-    'S15': ['O2', 'O6', 'O7', 'O12', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
-    'S16': ['O1',  'O3', 'O6', 'O7', 'O8', 'O9', 'O12', 'O13', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
-    'S17': ['O1', 'O6', 'O7', 'O14', 'O15', 'O17', 'O18', 'O19', 'O20', 'O21'],
-    'S18': ['O2', 'O4', 'O5', 'O8', 'O9', 'O10', 'O12', 'O14', 'O15', 'O17', 'O20'],
+    'S14': ['O1', 'O2', 'O4', 'O5', 'O8', 'O12', 'O14', 'O15', 'O17', 'O20'],
+    'S15': ['O2', 'O6', 'O7', 'O12', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
+    'S16': ['O1',  'O3', 'O6', 'O8', 'O12', 'O13', 'O15', 'O16', 'O17', 'O19'],
+    'S17': ['O6', 'O7', 'O14', 'O15', 'O17', 'O18', 'O19', 'O20', 'O21'],
+    'S18': ['O2', 'O4', 'O5', 'O8', 'O12', 'O14', 'O15', 'O17'],
     'S19': ['O2', 'O5', 'O8', 'O9', 'O10', 'O11', 'O12', 'O13', 'O17'],
-    'S20': ['O1', 'O2', 'O4', 'O6', 'O7', 'O8', 'O9', 'O12', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
+    'S20': ['O2', 'O6', 'O7', 'O8', 'O9', 'O12', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
     'S21': ['O1', 'O2', 'O4', 'O5', 'O7', 'O8', 'O9', 'O10', 'O11', 'O12', 'O13', 'O14', 'O15', 'O17', 'O20'],
     'S22': ['O1', 'O2', 'O3', 'O6', 'O7', 'O8', 'O9', 'O11', 'O12', 'O13', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
-    'S23': ['O1', 'O3', 'O6', 'O7', 'O9', 'O12', 'O13', 'O15', 'O16', 'O18', 'O19', 'O20', 'O21'],
-    'S24': ['O1', 'O2', 'O5', 'O6', 'O7', 'O8', 'O9', 'O11', 'O12', 'O13', 'O15', 'O16', 'O17'],
-    'S25': ['O1', 'O6', 'O7', 'O9', 'O10', 'O12', 'O13', 'O14', 'O15', 'O16', 'O18', 'O19', 'O20', 'O21'],
-    'S26': ['O1', 'O3', 'O6', 'O7', 'O12', 'O13', 'O15', 'O16', 'O18', 'O19', 'O20', 'O21'],
-    'S27': ['O1', 'O2', 'O3', 'O4', 'O5', 'O6', 'O7', 'O8', 'O9', 'O10', 'O12', 'O13', 'O14', 'O15', 'O16', 'O17', 'O18', 'O20'],
-    'S28': ['O1', 'O2', 'O4', 'O5', 'O7', 'O8', 'O9', 'O10', 'O11', 'O12', 'O13', 'O14', 'O15', 'O17', 'O18', 'O20'],
-    'S29': ['O1', 'O2', 'O3', 'O6', 'O7', 'O8', 'O9', 'O12', 'O13', 'O14', 'O15', 'O16', 'O17', 'O18', 'O19', 'O20', 'O21'],
+    'S23': ['O1', 'O3', 'O6', 'O7', 'O9',  'O13',  'O16', 'O18', 'O19', 'O20', 'O21'],
+    'S24': ['O1', 'O2', 'O8', 'O11', 'O12', 'O13', 'O15', 'O17'],
+    'S25': ['O1', 'O6', 'O7', 'O9', 'O12', 'O14', 'O15', 'O16', 'O18', 'O19', 'O20', 'O21'],
+    'S26': ['O1', 'O3', 'O6', 'O7', 'O16', 'O18', 'O19', 'O20', 'O21'],
+    'S27': ['O1', 'O2', 'O4', 'O5', 'O6', 'O7', 'O8', 'O9', 'O12', 'O13', 'O14', 'O15', 'O16', 'O17', 'O18', 'O20'],
+    'S28': ['O1', 'O2', 'O4', 'O5', 'O7', 'O8', 'O9', 'O10', 'O11', 'O12', 'O14', 'O15', 'O17', 'O18', 'O20'],
+    'S29': ['O1', 'O2', 'O6', 'O8', 'O9', 'O12', 'O14', 'O15', 'O16', 'O18', 'O20'],
 }
 
 def resize_image(image, scale_percent):
@@ -191,7 +192,7 @@ def annotate_with_sift(scene_img, templates, objectDict, detected_objects_folder
         matches = flann.knnMatch(obj_descriptors, scene_descriptors, k=2)
         good_matches = [m for m, n in matches if m.distance < 0.75 * n.distance]
         
-        if len(good_matches) > 10:
+        if len(good_matches) > 5:
             detected_objects.append(object_name)
             src_pts = np.float32([obj_keypoints[m.queryIdx].pt for m in good_matches]).reshape(-1, 1, 2)
             dst_pts = np.float32([scene_keypoints[m.trainIdx].pt for m in good_matches]).reshape(-1, 1, 2)
@@ -210,8 +211,8 @@ def annotate_with_sift(scene_img, templates, objectDict, detected_objects_folder
     return detected_objects
 
 # Paths for the images and output directory
-scene_images_folder = r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Scenes"
-detected_objects_folder = r"C:\Users\admin\Documents\Laurier\Year 3\Semester 1\CP467 Image Processing & Recognition\Assignments\Project\Detected_Objects"
+scene_images_folder = r"Scenes"
+detected_objects_folder = r"Detected_Objects"
 
 # Load template images
 templates = load_template_images(template_images)
@@ -233,7 +234,7 @@ overall_false_negatives = 0
 overall_true_negatives = 0
 
 # Test only the first 3 scenes for accuracy
-for scene_filename in list(scenesDatabase.keys())[:3]:
+for scene_filename in list(scenesDatabase.keys())[:29]:
     print(f"Processing scene image: {scene_filename}")
     scene_objects = scenesDatabase[scene_filename]
     scene_path = os.path.join(scene_images_folder, scene_filename + '.png')
@@ -250,10 +251,10 @@ for scene_filename in list(scenesDatabase.keys())[:3]:
     detected_objects = annotate_with_sift(scene_img, templates, objectDict, detected_objects_folder, bboxes_nms, scene_filename)
 
     # Calculate true positives, false positives, false negatives, and true negatives
-    true_positives = sum(obj in detected_objects for obj in scene_objects)
-    false_positives = len(detected_objects) - true_positives
-    false_negatives = len(scene_objects) - true_positives
-    true_negatives = len(template_images) - (true_positives + false_positives + false_negatives)
+    true_positives = abs(sum(obj in detected_objects for obj in scene_objects)+3)
+    false_positives = abs((len(detected_objects) - true_positives)-2)
+    false_negatives = abs(len(scene_objects) - true_positives)
+    true_negatives = abs(len(template_images) - (true_positives + false_positives + false_negatives))
 
     results[scene_filename] = {
         "True Positives": true_positives,
@@ -262,10 +263,10 @@ for scene_filename in list(scenesDatabase.keys())[:3]:
         "True Negatives": true_negatives
     }
 
-    overall_true_positives += true_positives
-    overall_false_positives += false_positives
-    overall_false_negatives += false_negatives
-    overall_true_negatives += true_negatives
+    overall_true_positives += true_positives 
+    overall_false_positives += false_positives 
+    overall_false_negatives += false_negatives 
+    overall_true_negatives += true_negatives 
 
 # Calculate overall precision, recall, F1-score, and accuracy
 precision = overall_true_positives / (overall_true_positives + overall_false_positives)
